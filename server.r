@@ -22,25 +22,28 @@ function(input, output, session) {
       ggplot(selected_data,aes(
         apply(t(replicate(dim(selected_data)[1],roll)) 
               + Fort.Save <= standard_dc[input$pc_level_control,'dc'],1,sum)/20,
-        y=..scaled..,
+        #y=..scaled..,
         color = as.factor(selected_data$Level-input$pc_level_control))) 
       + geom_density()
-      + scale_x_continuous(labels = scales::percent)
+      #+ scale_x_continuous(labels = scales::percent)
       + labs(x = 'Chance monster fails to save'))
   })
   
   output$plot_ecdf <- renderPlotly({
     selected_data2 <-monster_data[is.element(monster_data$Level-input$pc_level_control,
                                              input$rel_CR),]
-    selected_measure <- apply(t(replicate(dim(selected_data2)[1],roll)) 
+    selected_data2$selected_measure <- apply(t(replicate(dim(selected_data2)[1],roll)) 
                               + selected_data2$Fort.Save <= 
                                 standard_dc[input$pc_level_control,'dc'],1,sum)/20
+    selected_data2 <- selected_data2[order(selected_data2$selected_measure),]
     ggplotly(
-      ggplot(selected_data2[order(selected_measure)],aes(order(selected_measure),
-                                                         color = as.factor(selected_data2$Level-input$pc_level_control))) 
+      ggplot(selected_data2,aes(selected_measure,
+                                color = as.factor(selected_data2$Level-
+                                                    input$pc_level_control))) 
       + stat_ecdf()
-      
-      + labs(x = 'Chance monster fails to save'))
+      + scale_x_continuous(labels = scales::percent)
+      + scale_y_continuous(labels = scales::percent)
+      + labs(x = 'Chance monster fails to save',y = 'percent of monster populations'))
   })
   
   output$test_text <- renderPrint({
@@ -50,6 +53,6 @@ function(input, output, session) {
   observe({
     pc_level <- input$pc_level_control
     
-    updateCheckboxGroupInput(session,'rel_CR',choices = sort(unique(monster_data$Level)-pc_level),inline = TRUE)
+    updateCheckboxGroupInput(session,'rel_CR',choices = sort(unique(monster_data$Level)-pc_level),selected = 0,inline = TRUE)
   })
 }
