@@ -1,0 +1,13 @@
+name: pathfinder_shiny_monster
+title: pathfinder_shiny_monster
+username:
+account: wesleyalford
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 422925
+bundleId: 1571764
+url: https://wesleyalford.shinyapps.io/pathfinder_shiny_monster/
+when: 1536198087.89273
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .gitattributes|README.md
